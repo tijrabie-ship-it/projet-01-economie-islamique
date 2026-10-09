@@ -1,0 +1,96 @@
+/* static/style.css */
+
+/* استيراد خط عربي احترافي من جوجل */
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap');
+
+body {
+    font-family: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fa;
+    color: #2c3e50;
+    line-height: 1.6;
+}
+
+/* تنسيق العناوين الرئيسية */
+.header-title {
+    color: #1a252f;
+    font-weight: 800;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.05);
+    letter-spacing: -0.5px;
+}
+
+/* تحسين شكل البطاقات (Cards) */
+.card {
+    border-radius: 12px;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.04);
+    margin-bottom: 30px;
+    border: 1px solid rgba(0,0,0,0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 20px rgba(0, 0, 0, 0.08);
+}
+
+.card-header {
+    font-weight: 700;
+    border-radius: 12px 12px 0 0 !important;
+    font-size: 1.15rem;
+    padding: 15px 20px;
+    letter-spacing: 0.5px;
+}
+
+/* ألوان مخصصة للأقسام */
+.bg-primary-custom { background-color: #2980b9; color: white; border-bottom: 3px solid #1f6391; }
+.bg-success-custom { background-color: #27ae60; color: white; border-bottom: 3px solid #1e8449; }
+.bg-danger-custom { background-color: #c0392b; color: white; border-bottom: 3px solid #922b21; }
+
+/* تنسيق حقول الإدخال */
+.form-control, .form-select {
+    border-radius: 8px;
+    border: 1px solid #ced4da;
+    padding: 10px 15px;
+    font-size: 0.95rem;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #3498db;
+    box-shadow: 0 0 0 0.25rem rgba(52, 152, 219, 0.25);
+}
+
+/* تنسيق الأزرار */
+.btn {
+    border-radius: 8px;
+    font-weight: 700;
+    padding: 10px 20px;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+}
+
+/* صناديق عرض النتائج */
+.result-box {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    border-right: 6px solid #27ae60;
+    margin-top: 20px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+}
+
+.negative-va { 
+    border-right: 6px solid #c0392b; 
+    background-color: #fffaf9; 
+}
+
+.warning-box { 
+    border-right: 6px solid #f39c12; 
+    background-color: #fffdf7; 
+}
+
+/* تنسيق الشارات (Badges) */
+.badge {
+    padding: 0.5em 0.8em;
+    border-radius: 6px;
+    font-weight: 600;
+}

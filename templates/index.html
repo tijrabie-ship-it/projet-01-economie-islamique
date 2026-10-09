@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التحكم - النمذجة في الاقتصاد الإسلامي والمالية التشاركية</title>
+    
+    <!-- استدعاء Bootstrap لتصميم احترافي -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+    
+    <!-- استدعاء ملف CSS المخصص -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <!-- شريط التنقل (Navbar) لربط النماذج التطبيقية -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4 shadow-sm">
+    <div class="container">
+        <a class="navbar-brand fw-bold" href="/">منصة النمذجة المالية الإسلامية</a>
+        <button class="navbar-toggler" type="submit" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <!-- الرابط الخاص بالنموذج الأول (العقود والذكاء الاصطناعي) -->
+                    <a class="nav-link" href="/">محاكي العقود (NLP & VA)</a>
+                </li>
+                <li class="nav-item">
+                    <!-- الرابط الخاص بالنموذج الثاني (الزكاة والمشاركة) -->
+                    <a class="nav-link" href="/zakat_pls_dashboard">محاكي الزكاة والمشاركة (PLS)</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-5 mb-5">
+    <div class="text-center mb-5">
+        <h2 class="header-title">النموذج التطبيقي: الاقتصاد الجزئي الإسلامي والمالية التشاركية</h2>
+        <p class="text-muted">منصة تحليل العقود البنكية وتقييم القيمة المضافة والمخاطر</p>
+        <hr class="w-50 mx-auto">
+    </div>
+    
+    <div class="row">
+        <!-- القسم الأول: حساب القيمة المضافة (VA) -->
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header bg-primary-custom">1. محاكي القيمة المضافة (VA) للمعاملات</div>
+                <div class="card-body">
+                    <form method="POST" action="/calculate_va">
+                        <div class="mb-3">
+                            <label class="form-label">نوع المعاملة:</label>
+                            <select class="form-select" name="transaction_type">
+                                <option value="taqsit">بيع التقسيط (Taqsit)</option>
+                                <option value="eina">بيع العينة (Eina)</option>
+                            </select>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">الكمية (Q):</label>
+                                <input type="number" class="form-control" name="quantity" required value="100">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">السعر الفوري (P1):</label>
+                                <input type="number" step="0.01" class="form-control" name="price_1" required value="10">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">السعر الآجل (P2):</label>
+                                <input type="number" step="0.01" class="form-control" name="price_2" required value="12">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-outline-primary w-100">حساب الأثر الاقتصادي</button>
+                    </form>
+
+                    <!-- عرض نتيجة القيمة المضافة والمبيان -->
+                    {% if va_result %}
+                    <div class="result-box {% if va_result.va < 0 %}negative-va{% endif %}">
+                        <h6 class="fw-bold">النتيجة:</h6>
+                        <p class="mb-1"><strong>القيمة المضافة (VA):</strong> <span dir="ltr" class="badge {% if va_result.va < 0 %}bg-danger{% else %}bg-success{% endif %} fs-6">{{ va_result.va }}</span></p>
+                        <p class="mb-1"><strong>الحالة:</strong> {{ va_result.status }}</p>
+                        <p class="mb-0 text-muted"><small><strong>التفسير:</strong> {{ va_result.message }}</small></p>
+                        
+                        <!-- الحقل المخفي والمساحة المخصصة للرسم البياني -->
+                        <input type="hidden" id="va_value_hidden" value="{{ va_result.va }}">
+                        <div class="mt-4" style="height: 250px;">
+                            <canvas id="vaChart"></canvas>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- القسم الثاني: تحليل العقود بالذكاء الاصطناعي (AraBERT) -->
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header bg-success-custom">2. تحليل العقود البنكية ذكياً (AraBERT NLP)</div>
+                <div class="card-body">
+                    <!-- تمت إضافة enctype لدعم رفع الملفات -->
+                    <form method="POST" action="/analyze_nlp" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">قم برفع ملف العقد (Word أو PDF) أو أدخل النص يدوياً:</label>
+                            
+                            <!-- حقل رفع الملفات -->
+                            <input class="form-control mb-3" type="file" name="contract_file" accept=".pdf,.docx,.doc">
+                            
+                            <!-- حقل النص اليدوي كخيار بديل -->
+                            <textarea class="form-control" name="contract_text" rows="4" placeholder="أو قم بلصق نص العقد هنا... مثال: يلتزم المقترض بدفع فائدة منصوص عليها تعاقدياً دون رابط سببي مع الربحية..."></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-outline-success w-100">فحص العقد واستخراج الأحكام</button>
+                    </form>
+
+                    <!-- عرض نتيجة NLP -->
+                    {% if nlp_result %}
+                    <div class="result-box {% if 'عالي' in nlp_result.risk_level %}negative-va{% elif 'متوسط' in nlp_result.risk_level %}warning-box{% endif %}">
+                        <h6 class="fw-bold">تقرير المعالجة اللغوية الطبيعية:</h6>
+                        <p class="mb-1"><strong>مستوى المخاطرة:</strong> <span class="badge bg-dark">{{ nlp_result.risk_level }}</span></p>
+                        <p class="mb-1"><strong>الاكتشاف:</strong> {{ nlp_result.finding }}</p>
+                        <p class="mb-0 text-muted"><small><strong>السند الأكاديمي:</strong> {{ nlp_result.explanation }}</small></p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- القسم الثالث: المدقق الرياضي لمعاملات الربا -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-danger">
+                <div class="card-header bg-danger-custom">3. المدقق الرياضي لمعاملات الربا (الفضل والنسيئة)</div>
+                <div class="card-body">
+                    <form method="POST" action="/calculate_riba">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">هل السلعتان المتبادلتان من نفس الطبيعة/الجنس؟ (N1 = N2)</label>
+                                <select class="form-select" name="is_same_nature">
+                                    <option value="yes">نعم (نفس الطبيعة)</option>
+                                    <option value="no">لا (طبائع مختلفة)</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">هل يوجد تأجيل زمني في الدفع أو التسليم؟ (T1 < T2)</label>
+                                <select class="form-select" name="is_delayed">
+                                    <option value="yes">نعم (يوجد تأجيل/نسيئة)</option>
+                                    <option value="no">لا (فوري/يداً بيد)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3 mb-3">
+                                <label class="form-label">الكمية الأولى (Q1):</label>
+                                <input type="number" class="form-control" name="quantity_1" required value="100">
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label class="form-label">الكمية الثانية (Q2):</label>
+                                <input type="number" class="form-control" name="quantity_2" required value="120">
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label class="form-label">سعر الوحدة الأول (P1):</label>
+                                <input type="number" step="0.01" class="form-control" name="price_1" required value="10">
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label class="form-label">سعر الوحدة الثاني (P2):</label>
+                                <input type="number" step="0.01" class="form-control" name="price_2" required value="15">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-danger w-100 fw-bold">تدقيق المعاملة رياضياً</button>
+                    </form>
+
+                    <!-- عرض نتائج تدقيق الربا والمبيان -->
+                    {% if riba_result %}
+                    <div class="result-box {% if riba_result.va < 0 %}negative-va{% endif %} mt-4">
+                        <h5 class="text-danger border-bottom pb-2">تقرير التدقيق الفقهي والكمي: {{ riba_result.type }}</h5>
+                        <div class="row mt-3">
+                            <div class="col-md-4">
+                                <p><strong>القيمة المضافة (VA):</strong> <br><span dir="ltr" class="badge bg-danger fs-5">{{ riba_result.va }}</span></p>
+                            </div>
+                            <div class="col-md-8">
+                                <p><strong>التصنيف:</strong> {{ riba_result.status }}</p>
+                                <p><strong>التحليل:</strong> {{ riba_result.message }}</p>
+                            </div>
+                        </div>
+
+                        <!-- الحقل المخفي والمساحة المخصصة للرسم البياني -->
+                        <input type="hidden" id="va_value_hidden" value="{{ riba_result.va }}">
+                        <div class="mt-4" style="height: 250px;">
+                            <canvas id="vaChart"></canvas>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- استدعاء سكريبتات Bootstrap -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<!-- استدعاء مكتبة Chart.js لرسم المبيانات -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- استدعاء ملف الجافاسكريبت المخصص -->
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+
+</body>
+</html>
